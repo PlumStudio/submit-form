@@ -11,30 +11,34 @@
     <script src="static/js/jquery.form.js"></script>
     <link href="static/css/bootstrap.css" rel="stylesheet" />
     <script src="static/js/bootstrap.js"></script>
+    <script src="static/js/bootstrap-filestyle.js"></script>
     <link href="static/css/public.css" rel="stylesheet" />
     <script>
         (function ($) {
             $(function () {
+                $('input[type=file]').filestyle();
+
+                //ajax提交表单，但是不能上传文件
                 $('form').submit(function () {
-                    var _v = document.getElementById('formhidden').value;
-                        $.ajax({
-                            type: "POST",
-                            url: "",
-                            timeout: 20000,
-                            data: $(this).serialize(),
-                            success: function (msg) {
-                                console.log(msg);
-                            },
-                            error: function () {
-                                console.log('ajax submit error.');
-                            }
-                        });
+                    $.ajax({
+                        type: "POST",
+                        url: "server/handler.ashx",
+                        timeout: 20000,
+                        data: $(this).serialize(),
+                        success: function (msg) {
+                            console.log(msg);
+                        },
+                        error: function () {
+                            console.log('ajax submit error.');
+                        }
+                    });
                     return false;
                 })
 
+                //jQuery.form 提交表单，但是不能上传文件
                 $('.submit-jquery-form').click(function () {
                     var options = {
-                        url: "",
+                        url: "server/handler.ashx",
                         type: "POST",
                         dataType: "json",
                         clearForm: false,
@@ -48,17 +52,53 @@
                     $('#sform').ajaxForm(options).submit();
                     return false;
                 })
+
+                //js formdata 提交表单并上传文件
+                $('.submit-form-data').click(function () {
+                    var _data = new FormData(document.forms.namedItem("sform"));
+                    // _data.append("CustomField", "This is some extra data");
+                    var _req = new XMLHttpRequest();
+                    _req.open("POST", "server/handler.ashx", true);
+                    _req.onload = function (oEvent) {
+                        if (_req.status == 200) {
+                            console.log('upload success');
+                        } else {
+                            console.log('upload error');
+                        }
+                    };
+                    _req.send(_data);
+                })
+
+                //jQuery formdata 提交表单并上传文件
+                $('.submit-jquery-formdata').click(function () {
+                    var formData = new FormData($("#sform")[0]);
+                    $.ajax({
+                        url: 'server/handler.ashx',
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (d) {
+                            console.log(d);
+                        },
+                        error: function (e) {
+                            console.log(e);
+                        }
+                    });
+                })
             })
-            })(jQuery);
+        })(jQuery);
     </script>
 </head>
 <body>
     <h4>Ajax表单提交</h4>
-    <form id="sform" name="sform" method="post" action="" enctype="multipart/form-data">
+    <form id="sform" name="sform" method="post" action="server/handler.ashx" enctype="multipart/form-data">
         <table id="stable" class="table table-hover table-striped table-bordered">
             <tbody>
                 <tr>
-                    <td>
+                    <td width="20%">
                         用户名：
                     </td>
                     <td>
@@ -91,6 +131,14 @@
                 </tr>
                 <tr>
                     <td>
+                        上传文件：
+                    </td>
+                    <td>
+                        <input type="file" name="file" id="input001" class="filestyle">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         短信验证码：
                     </td>
                     <td>
@@ -100,8 +148,10 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="submit" value="Ajax提交" class="btn btn-default submit-ajax"  />
-                        <input type="button" value="jQuery.Form提交" class="btn btn-default submit-jquery-form"  />
+                        <input type="submit" value="Ajax提交" class="btn btn-default submit-ajax" />
+                        <input type="button" value="jQuery.Form提交" class="btn btn-default submit-jquery-form" />
+                        <input type="button" value="js FormData提交" class="btn btn-default submit-form-data" />
+                        <input type="button" value="jQuery FormData提交" class="btn btn-default submit-jquery-formdata" />
                     </td>
                 </tr>
             </tbody>
