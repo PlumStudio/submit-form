@@ -1,0 +1,13 @@
+﻿    body {
+        margin: 10px;
+        font-family:'Microsoft YaHei'
+    }
+
+    #stable {
+        width: 600px;
+        margin:0 auto;
+    }
+    h4{
+        margin:15px auto;
+        text-align:center;
+    }

@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="author" content="PlumStudio" />
+    <meta name="description" content="传统表单提交" />
+
+    <script src="static/js/jquery.js"></script>
+    <script src="static/js/jquery.form.js"></script>
+    <link href="static/css/bootstrap.css" rel="stylesheet" />
+    <script src="static/js/bootstrap.js"></script>
+    <link href="static/css/public.css" rel="stylesheet" />
+    <script>
+        (function ($) {
+            $(function () {
+                $('form').submit(function () {
+                    var _v = document.getElementById('formhidden').value;
+                        $.ajax({
+                            type: "POST",
+                            url: "",
+                            timeout: 20000,
+                            data: $(this).serialize(),
+                            success: function (msg) {
+                                console.log(msg);
+                            },
+                            error: function () {
+                                console.log('ajax submit error.');
+                            }
+                        });
+                    return false;
+                })
+
+                $('.submit-jquery-form').click(function () {
+                    var options = {
+                        url: "",
+                        type: "POST",
+                        dataType: "json",
+                        clearForm: false,
+                        success: function (d) {
+                            console.log(d);
+                        },
+                        error: function (r) {
+                            console.log('jquery form submit error.');
+                        }
+                    };
+                    $('#sform').ajaxForm(options).submit();
+                    return false;
+                })
+            })
+            })(jQuery);
+    </script>
+</head>
+<body>
+    <h4>Ajax表单提交</h4>
+    <form id="sform" name="sform" method="post" action="" enctype="multipart/form-data">
+        <table id="stable" class="table table-hover table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <td>
+                        用户名：
+                    </td>
+                    <td>
+                        <input class="input-sm" type="text" name="username" placeholder="请输入..." />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        密码：
+                    </td>
+                    <td>
+                        <input class="input-sm" type="password" name="userpwd" placeholder="请输入..." />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        手机号：
+                    </td>
+                    <td>
+                        <input class="input-sm" type="tel" name="cellphone" placeholder="请输入..." />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        电子邮箱：
+                    </td>
+                    <td>
+                        <input class="input-sm" type="email" name="email" placeholder="请输入..." />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        短信验证码：
+                    </td>
+                    <td>
+                        <input class="input-sm" type="text" name="vcode" placeholder="请输入..." />
+                        <input id="formhidden" type="hidden" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="Ajax提交" class="btn btn-default submit-ajax"  />
+                        <input type="button" value="jQuery.Form提交" class="btn btn-default submit-jquery-form"  />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </form>
+</body>
+</html>
